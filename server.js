@@ -15,6 +15,9 @@ const tagRoutes = require('./routes/tags');
 
 const app = express();
 
+// Trust proxy for rate limiting and X-Forwarded-For header (required for Render)
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 app.use(cors({
@@ -34,7 +37,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/forum_db', {
+mongoose.connect(process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/forum_db', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
