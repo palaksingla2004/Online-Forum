@@ -1,0 +1,720 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "Forum Backend API",
+  "dateExported": "2024-01-15T10:00:00.000Z",
+  "version": "1.1",
+  "folders": [
+    {
+      "_id": "auth-folder",
+      "name": "🔐 Authentication",
+      "containerId": "",
+      "created": "2024-01-15T10:00:00.000Z",
+      "sortNum": 10000
+    },
+    {
+      "_id": "threads-folder",
+      "name": "📝 Threads",
+      "containerId": "",
+      "created": "2024-01-15T10:00:00.000Z",
+      "sortNum": 20000
+    },
+    {
+      "_id": "replies-folder",
+      "name": "💬 Replies",
+      "containerId": "",
+      "created": "2024-01-15T10:00:00.000Z",
+      "sortNum": 30000
+    },
+    {
+      "_id": "votes-folder",
+      "name": "👍 Voting",
+      "containerId": "",
+      "created": "2024-01-15T10:00:00.000Z",
+      "sortNum": 40000
+    },
+    {
+      "_id": "categories-folder",
+      "name": "📂 Categories",
+      "containerId": "",
+      "created": "2024-01-15T10:00:00.000Z",
+      "sortNum": 50000
+    },
+    {
+      "_id": "tags-folder",
+      "name": "🏷️ Tags",
+      "containerId": "",
+      "created": "2024-01-15T10:00:00.000Z",
+      "sortNum": 60000
+    },
+    {
+      "_id": "users-folder",
+      "name": "👤 Users",
+      "containerId": "",
+      "created": "2024-01-15T10:00:00.000Z",
+      "sortNum": 70000
+    }
+  ],
+  "requests": [
+    {
+      "_id": "health-check",
+      "colId": "forum-api",
+      "containerId": "",
+      "name": "🏥 Health Check",
+      "url": "{{baseUrl}}/health",
+      "method": "GET",
+      "sortNum": 5000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.status",
+          "action": "equal",
+          "value": "OK"
+        }
+      ]
+    },
+    {
+      "_id": "register-user",
+      "colId": "forum-api",
+      "containerId": "auth-folder",
+      "name": "Register New User",
+      "url": "{{baseUrl}}/auth/register",
+      "method": "POST",
+      "sortNum": 10000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"TestPass123!\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.token",
+          "action": "istype",
+          "value": "string"
+        }
+      ]
+    },
+    {
+      "_id": "login-user",
+      "colId": "forum-api",
+      "containerId": "auth-folder",
+      "name": "Login User",
+      "url": "{{baseUrl}}/auth/login",
+      "method": "POST",
+      "sortNum": 20000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123!\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.token",
+          "action": "setto",
+          "value": "authToken"
+        }
+      ]
+    },
+    {
+      "_id": "get-profile",
+      "colId": "forum-api",
+      "containerId": "auth-folder",
+      "name": "Get Current User Profile",
+      "url": "{{baseUrl}}/auth/me",
+      "method": "GET",
+      "sortNum": 30000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{authToken}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "get-categories",
+      "colId": "forum-api",
+      "containerId": "categories-folder",
+      "name": "Get All Categories",
+      "url": "{{baseUrl}}/categories",
+      "method": "GET",
+      "sortNum": 50000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.categories[0].id",
+          "action": "setto",
+          "value": "categoryId"
+        }
+      ]
+    },
+    {
+      "_id": "get-threads",
+      "colId": "forum-api",
+      "containerId": "threads-folder",
+      "name": "Get All Threads",
+      "url": "{{baseUrl}}/threads",
+      "method": "GET",
+      "sortNum": 20000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "page",
+          "value": "1",
+          "isDisabled": true
+        },
+        {
+          "name": "limit",
+          "value": "10",
+          "isDisabled": true
+        },
+        {
+          "name": "sort",
+          "value": "recent",
+          "isDisabled": true
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.threads[0].id",
+          "action": "setto",
+          "value": "threadId"
+        }
+      ]
+    },
+    {
+      "_id": "create-thread",
+      "colId": "forum-api",
+      "containerId": "threads-folder",
+      "name": "Create New Thread",
+      "url": "{{baseUrl}}/threads",
+      "method": "POST",
+      "sortNum": 10000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{authToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"Thunder Client Test Thread\",\n  \"content\": \"This is a test thread created using Thunder Client. It demonstrates the thread creation functionality with proper authentication and validation.\",\n  \"category\": \"{{categoryId}}\",\n  \"tags\": [\"test\", \"thunder-client\", \"api\"]\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.thread.id",
+          "action": "setto",
+          "value": "newThreadId"
+        }
+      ]
+    },
+    {
+      "_id": "get-single-thread",
+      "colId": "forum-api",
+      "containerId": "threads-folder",
+      "name": "Get Single Thread",
+      "url": "{{baseUrl}}/threads/{{threadId}}",
+      "method": "GET",
+      "sortNum": 30000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "search-threads",
+      "colId": "forum-api",
+      "containerId": "threads-folder",
+      "name": "Search Threads",
+      "url": "{{baseUrl}}/threads",
+      "method": "GET",
+      "sortNum": 40000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "search",
+          "value": "javascript"
+        },
+        {
+          "name": "sort",
+          "value": "popular"
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "filter-by-category",
+      "colId": "forum-api",
+      "containerId": "threads-folder",
+      "name": "Filter Threads by Category",
+      "url": "{{baseUrl}}/threads",
+      "method": "GET",
+      "sortNum": 50000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "category",
+          "value": "{{categoryId}}"
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "add-reply",
+      "colId": "forum-api",
+      "containerId": "replies-folder",
+      "name": "Add Reply to Thread",
+      "url": "{{baseUrl}}/replies/{{threadId}}",
+      "method": "POST",
+      "sortNum": 30000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{authToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"content\": \"This is a test reply created using Thunder Client. It demonstrates the reply functionality with proper authentication.\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.reply.id",
+          "action": "setto",
+          "value": "replyId"
+        }
+      ]
+    },
+    {
+      "_id": "add-nested-reply",
+      "colId": "forum-api",
+      "containerId": "replies-folder",
+      "name": "Add Nested Reply",
+      "url": "{{baseUrl}}/replies/{{threadId}}",
+      "method": "POST",
+      "sortNum": 40000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{authToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"content\": \"This is a nested reply to demonstrate the threaded conversation feature.\",\n  \"parentReplyId\": \"{{replyId}}\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        }
+      ]
+    },
+    {
+      "_id": "upvote-thread",
+      "colId": "forum-api",
+      "containerId": "votes-folder",
+      "name": "Upvote Thread",
+      "url": "{{baseUrl}}/votes/threads/{{threadId}}",
+      "method": "POST",
+      "sortNum": 40000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{authToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"type\": \"upvote\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "downvote-thread",
+      "colId": "forum-api",
+      "containerId": "votes-folder",
+      "name": "Downvote Thread",
+      "url": "{{baseUrl}}/votes/threads/{{threadId}}",
+      "method": "POST",
+      "sortNum": 50000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{authToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"type\": \"downvote\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "vote-stats",
+      "colId": "forum-api",
+      "containerId": "votes-folder",
+      "name": "Get Vote Statistics",
+      "url": "{{baseUrl}}/votes/threads/{{threadId}}/stats",
+      "method": "GET",
+      "sortNum": 60000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "get-popular-tags",
+      "colId": "forum-api",
+      "containerId": "tags-folder",
+      "name": "Get Popular Tags",
+      "url": "{{baseUrl}}/tags/popular",
+      "method": "GET",
+      "sortNum": 60000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "limit",
+          "value": "10",
+          "isDisabled": true
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "search-tags",
+      "colId": "forum-api",
+      "containerId": "tags-folder",
+      "name": "Search Tags",
+      "url": "{{baseUrl}}/tags",
+      "method": "GET",
+      "sortNum": 70000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "search",
+          "value": "java"
+        },
+        {
+          "name": "sort",
+          "value": "usage"
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "get-user-profile",
+      "colId": "forum-api",
+      "containerId": "users-folder",
+      "name": "Get User Profile by ID",
+      "url": "{{baseUrl}}/users/689f6933b19b8d9ebf32223b",
+      "method": "GET",
+      "sortNum": 70000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "update-profile",
+      "colId": "forum-api",
+      "containerId": "users-folder",
+      "name": "Update User Profile",
+      "url": "{{baseUrl}}/users/profile",
+      "method": "PUT",
+      "sortNum": 80000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{authToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"bio\": \"Updated bio from Thunder Client - Full-stack developer passionate about building great APIs!\",\n  \"avatar\": \"https://via.placeholder.com/150\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "search-users",
+      "colId": "forum-api",
+      "containerId": "users-folder",
+      "name": "Search Users",
+      "url": "{{baseUrl}}/users",
+      "method": "GET",
+      "sortNum": 90000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "q",
+          "value": "john"
+        },
+        {
+          "name": "limit",
+          "value": "10"
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    }
+  ],
+  "environments": [
+    {
+      "_id": "env-local",
+      "name": "Local Development",
+      "default": true,
+      "sortNum": 10000,
+      "created": "2024-01-15T10:00:00.000Z",
+      "modified": "2024-01-15T10:00:00.000Z",
+      "data": [
+        {
+          "name": "baseUrl",
+          "value": "http://localhost:5000/api"
+        },
+        {
+          "name": "authToken",
+          "value": ""
+        },
+        {
+          "name": "categoryId",
+          "value": ""
+        },
+        {
+          "name": "threadId",
+          "value": ""
+        },
+        {
+          "name": "newThreadId",
+          "value": ""
+        },
+        {
+          "name": "replyId",
+          "value": ""
+        }
+      ]
+    }
+  ]
+}
